@@ -4,14 +4,21 @@ import connectMongo from "@/lib/mongoose";
 import Order, { IOrder } from "@/models/Order";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import OrderStatusUpdate from "@/app/components/OrderStatusUpdate";
 import Link from "next/link";
+
+// Import client component dynamically with SSR disabled
+import dynamic from 'next/dynamic';
+
+const OrderStatusUpdate = dynamic(
+  () => import('@/app/components/OrderStatusUpdate'),
+  { ssr: false }
+);
 
 interface OrderPageProps {
   params: Promise<{ id: string }>;
 }
 
-// Define status options
+// Define status options - Moved here from component
 export const ORDER_STATUSES = [
   { value: 'pending', label: 'Pending', color: 'bg-amber-100 text-amber-800' },
   { value: 'confirmed', label: 'Confirmed', color: 'bg-blue-100 text-blue-800' },

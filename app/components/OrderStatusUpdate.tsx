@@ -1,7 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { ORDER_STATUSES, OrderStatus } from '@/app/orders/[id]/page';
+
+// Define status options locally (don't import from server component)
+const ORDER_STATUSES = [
+  { value: 'pending', label: 'Pending', color: 'bg-amber-100 text-amber-800' },
+  { value: 'confirmed', label: 'Confirmed', color: 'bg-blue-100 text-blue-800' },
+  { value: 'processing', label: 'Processing', color: 'bg-purple-100 text-purple-800' },
+  { value: 'shipped', label: 'Shipped', color: 'bg-cyan-100 text-cyan-800' },
+  { value: 'delivered', label: 'Delivered', color: 'bg-green-100 text-green-800' },
+  { value: 'cancelled', label: 'Cancelled', color: 'bg-red-100 text-red-800' },
+] as const;
+
+type OrderStatus = typeof ORDER_STATUSES[number]['value'];
 
 interface OrderStatusUpdateProps {
   orderId: string;
