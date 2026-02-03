@@ -64,8 +64,8 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'customer'], // 👈 Added 'customer' to enum
-    default: 'customer' // 👈 Changed default to 'customer'
+    enum: ['user', 'admin', 'customer'],
+    default: 'customer'
   },
   phone: { 
     type: String, 
@@ -104,13 +104,13 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Ensure only one default address exists
-UserSchema.pre('save', function(next) {
+(UserSchema as any).pre('save', function(this: any, next: (err?: Error) => void) {
   if (this.isModified('addresses')) {
     const defaultAddresses = this.addresses.filter((addr: any) => addr.isDefault);
     if (defaultAddresses.length > 1) {
-      // Reset all to false except the first one
+      const firstDefaultIndex = this.addresses.findIndex((a: any) => a.isDefault);
       this.addresses.forEach((addr: any, index: number) => {
-        addr.isDefault = index === this.addresses.findIndex((a: any) => a.isDefault);
+        addr.isDefault = index === firstDefaultIndex;
       });
     }
   }
@@ -118,7 +118,7 @@ UserSchema.pre('save', function(next) {
 });
 
 // Password hashing middleware
-UserSchema.pre('save', async function(next) {
+(UserSchema as any).pre('save', async function(this: any, next: (err?: Error) => void) {
   if (!this.isModified('password')) return next();
   
   try {
